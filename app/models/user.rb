@@ -1,8 +1,7 @@
 class User < ApplicationRecord
   has_many :apps
+  has_one_attached :image
   # belongs_to :teams, optional: true
-  has_many :user_favorite_apps
-  has_many :favorite_apps, through: :user_favorite_apps 
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
