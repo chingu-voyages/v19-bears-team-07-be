@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_21_193045) do
+ActiveRecord::Schema.define(version: 2020_05_25_174412) do
 
   create_table "apps", force: :cascade do |t|
     t.string "name"
@@ -40,6 +40,15 @@ ActiveRecord::Schema.define(version: 2020_05_21_193045) do
     t.datetime "updated_at", precision: 6, null: false
     t.integer "app_id"
     t.index ["app_id"], name: "index_tags_on_app_id"
+  end
+
+  create_table "user_favorite_apps", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "app_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["app_id"], name: "index_user_favorite_apps_on_app_id"
+    t.index ["user_id"], name: "index_user_favorite_apps_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
