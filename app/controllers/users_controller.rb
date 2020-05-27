@@ -8,11 +8,19 @@ class UsersController < ApplicationController
   # GET /users
   def index
     @users = User.all
+    @users.each do |user|
+      if user.image.attached?
+        user.img = url_for(user.image)
+      end
+    end
     json_response(@users)
   end
 
   # GET /user/:id
   def show
+    if @user.image.attached?
+      @user.img = url_for(@user.image)
+    end
     json_response(@user)
   end
 
@@ -26,10 +34,9 @@ class UsersController < ApplicationController
   def update
     @user.update!(user_params)
     if @user.image.attached?
-      @user.image.purge      
+      @user.image.purge
     end
     @user.image.attach(params[:image])
-    @user.img = url_for(@user.image)
     head :no_content
   end
 
