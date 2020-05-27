@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   root to: "test_login#index"
 
   # CRUD for Apps, Users, Tags, Catgories
-  resources :apps, :users, except: [:new, :edit]
+  resources :users, except: [:new, :edit]
 
   resources :apps, except: [:new, :edit] do 
     resources :comments, except: [:new, :edit]
