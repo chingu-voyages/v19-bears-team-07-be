@@ -25,6 +25,11 @@ class UsersController < ApplicationController
   # PATCH or PUT /users/:id
   def update
     @user.update!(user_params)
+    if @user.image.attached?
+      @user.image.purge      
+    end
+    @user.image.attach(params[:image])
+    @user.img = url_for(@user.image)
     head :no_content
   end
 
@@ -44,7 +49,7 @@ class UsersController < ApplicationController
 
   def user_params
     # whitelist params
-    params.permit(:id, :name, :img, :is_dev, :dev_bio, :dev_twitter, :dev_github, :dev_linkedin, :dev_portfolio)
+    params.permit(:user, :id, :name, :img, :image, :is_dev, :dev_bio, :dev_twitter, :dev_github, :dev_linkedin, :dev_portfolio)
   end
 
   def set_user
