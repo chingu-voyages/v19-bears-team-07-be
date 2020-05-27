@@ -24,7 +24,7 @@ Rails.application.routes.draw do
 
   # CRUD for resources owned by the authenticated user
   namespace :me do 
-    resources :apps, except: [:new, :edit]
+    resources :ratings, only: [:index, :update, :destroy]
     resources :favorite_apps, only: [:index, :update, :destroy]
   end
 
