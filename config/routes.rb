@@ -25,6 +25,7 @@ Rails.application.routes.draw do
   # CRUD for resources owned by the authenticated user
   namespace :me do 
     resources :apps, except: [:new, :edit]
+    resources :favorite_apps, only: [:index, :update, :destroy]
   end
 
   get 'users/:id/portfolio', to: 'users#portfolio'
