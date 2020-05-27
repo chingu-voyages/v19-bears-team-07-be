@@ -1,14 +1,14 @@
 # This controller allows the user to view the ratings he's given,
 # and to add/delete ratings (1 max)
-class Me::RatingsController < ApplicationController
+class Me::RatedAppsController < ApplicationController
     before_action :authenticate_user!
     before_action :set_user
 
     # GET me/ratings
     def index 
         if @user 
-            apps = current_user.reviewed_apps
-            json_response(apps)
+            ratings = Rating.where(reviewer: @user)
+            json_response(ratings)
         else
             head :forbidden
         end
@@ -22,8 +22,15 @@ class Me::RatingsController < ApplicationController
             head :not_found
         else
             if @user
-                if Rating.where(reviewer: @user, reviewed_app: @app).length == 0
-                    @user.reviewed_apps = @user.reviewed_apps + [@app]
+                rating = Rating.find_by(reviewer: @user, reviewed_app: @app)
+                score = rating_params[:score]
+                if score
+                    if rating
+                        rating.score = score
+                        rating.save!
+                    else 
+                        Rating.create!(reviewer: @user, reviewed_app: @app, score: score)
+                    end
                 end
                 head :no_content
             else
@@ -54,7 +61,7 @@ class Me::RatingsController < ApplicationController
     end
 
     def rating_params
-        params.permit(:id)
+        params.permit(:id, :score)
     end
 
 end
