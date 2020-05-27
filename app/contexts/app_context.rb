@@ -1,37 +1,40 @@
 # This class is responsible for fetching and organizing
-# rating data about apps in a coherent Hash that can be sent to the frontend
-SELECT = "apps.*, ratings.user_id as reviewer_id, ratings.app_id as reviewed_app_id, ratings.score"
-CurrentUserRatingJoin = -> (params) { 
-            " LEFT OUTER JOIN \"ratings\" ON \"ratings\".\"app_id\" = \"apps\".\"id\" AND " + 
-                    "\"ratings\".\"user_id\" = #{params[:current_user]["id"]} " 
+# data about apps in a coherent Hash that can be sent to the frontend
+SELECT_FAVS = " user_favorite_apps.user_id as follower_id, user_favorite_apps.app_id as favapp_id"
+SELECT_RATINGS = " ratings.user_id as reviewer_id, ratings.app_id as reviewed_app_id, ratings.score"
+SELECT = " apps.*, #{SELECT_FAVS}, #{SELECT_RATINGS}"
+
+JoinFavorite = -> (params) {
+    " LEFT OUTER JOIN \"user_favorite_apps\" ON \"user_favorite_apps\".\"app_id\" = \"apps\".\"id\" AND " + 
+            "\"user_favorite_apps\".\"user_id\" = #{params[:current_user]["id"]} "
+}
+JoinRating = -> (params) {
+    " LEFT OUTER JOIN \"ratings\" ON \"ratings\".\"app_id\" = \"apps\".\"id\" AND " + 
+            "\"ratings\".\"user_id\" = #{params[:current_user]["id"]} " 
+}
+Join = -> (params) { 
+    "#{JoinFavorite.call(params)} #{JoinRating.call(params)}"
 }
 
-# TODO: The best way to do this right now is to fetch the rating records from the DB, stream them through and hash by 
-# TODO : App ID, and then iterate over the Current User Ratings to attach the computed data to the record.
-# TODO: Ideally we'd write each hash to disk to do this in two passes, given the large amount of data that would be 
-# TODO: Involved, but this is fine for now.
 
-StatisticsQuery = "(SELECT app_id, score as score_category, COUNT(*) as count FROM ratings GROUP BY app_id, score)"
-
-class RatedAppContext
-    # Simple function that fetches all apps, and if the current user is logged in, attaches the ratings information
-    # to the hash
+class AppContext
+    # Simple function that fetches all apps, and if the current user is logged in, attaches a 'is_favorite'
+    # tag to the hash
     def self.all (params = {})
         if params[:current_user]
-            apps = App.joins(CurrentUserRatingJoin.call(params)).select(SELECT)
+            apps = App.joins(Join.call(params)).select(SELECT)
             apps = self.to_hashes(apps)
         else
             apps = App.all
             apps = self.to_hashes(apps)
         end
-
         rating_stats = self.rating_stats_where
         self.with_ratings(apps, rating_stats)
     end
 
     def self.find_by (params = {}) 
         if params[:current_user]
-            app = App.joins(CurrentUserRatingJoin.call(params)).select(SELECT).find_by(params.except(:current_user))
+            app = App.joins(Join.call(params)).select(SELECT).find_by(params.except(:current_user))
             app = self.to_hash(app)
         else
             app = App.find_by(params.except(:current_user))
@@ -44,7 +47,7 @@ class RatedAppContext
 
     def self.where (params = {})
         if params[:current_user]
-            apps = App.joins(CurrentUserRatingJoin.call(params)).select(SELECT).where(params.except(:current_user))
+            apps = App.joins(Join.call(params)).select(SELECT).where(params.except(:current_user))
             apps = self.to_hashes(apps)
         else 
             apps = App.where(params.except(:current_user))
@@ -53,6 +56,20 @@ class RatedAppContext
 
         rating_stats = self.rating_stats_where(params.except(:current_user))
         self.with_ratings(apps, rating_stats)
+    end
+
+
+    def self.to_hashes (apps)
+        apps.map { |app| 
+            self.to_hash(app)
+        }
+    end
+
+    def self.to_hash(app)
+        hash = app.attributes
+        hash["is_favorite"] = hash["follower_id"] != nil
+        hash["score"] = if hash["score"] then hash["score"] else 0 end
+        hash
     end
 
     # Calculates rating stats for the specified group of apps
@@ -81,8 +98,6 @@ class RatedAppContext
         apps.map { | app | 
             self.with_rating(app, rating_stats)
         }
-
-        apps 
     end
 
     def self.with_rating(app, rating_stats)
@@ -97,18 +112,6 @@ class RatedAppContext
         app
     end
 
-    def self.to_hashes (apps)
-        apps.map { |app| 
-            self.to_hash(app)
-        }
-    end
-
-    def self.to_hash(app)
-        hash = app.attributes
-        hash["score"] = if hash["score"] then hash["score"] else 0 end
-        hash
-    end
-
     private 
 
     def self.empty_ratings 
@@ -120,4 +123,4 @@ class RatedAppContext
         }
         
     end
-end 
+end
