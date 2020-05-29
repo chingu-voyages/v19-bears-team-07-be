@@ -81,7 +81,11 @@ class AppContext
 
     # Calculates rating stats for the specified group of apps
     def self.rating_stats_where(params = {})
-        rating_stats = Rating.group(:app_id, :score).select("app_id, score, COUNT(*) as count").where(params).map {|rating|
+        apps = App.where(params).all
+        app_ids = apps.map { |app| 
+            app.id 
+        }
+        rating_stats = Rating.group(:app_id, :score).select("app_id, score, COUNT(*) as count").where(app_id: app_ids).map {|rating|
             rating.attributes
         }
         aggregated_stats = { }
