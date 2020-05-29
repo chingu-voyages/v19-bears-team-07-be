@@ -64,6 +64,8 @@ class CommentsController < ApplicationController
       @app = App.find(params[:app_id])
     end
 
+    # TODO : In reality, the comment needs to be obtained from both the id
+    # TODO : AND the app id to be effective. But this works for now.
     def set_comment
       @comment = Comment.find(params[:id])
     end 

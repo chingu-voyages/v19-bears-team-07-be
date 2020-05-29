@@ -17,9 +17,6 @@ Rails.application.routes.draw do
 
   resources :apps, except: [:new, :edit] do 
     resources :comments, except: [:new, :edit]
-  end
-
-  resources :apps, except: [:new, :edit] do 
     resources :tags, except: [:new, :edit]
   end
 
