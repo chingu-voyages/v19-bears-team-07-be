@@ -13,7 +13,12 @@ Rails.application.routes.draw do
   root to: "test_login#index"
 
   # CRUD for Apps, Users, Tags, Catgories
-  resources :apps, :users, :tags, except: [:new, :edit]
+  resources :users, except: [:new, :edit]
+
+  resources :apps, except: [:new, :edit] do 
+    resources :comments, except: [:new, :edit]
+    resources :tags, except: [:new, :edit]
+  end
 
   resources :categories, except: [:new, :edit] do 
     member do 
@@ -25,6 +30,7 @@ Rails.application.routes.draw do
   # CRUD for resources owned by the authenticated user
   namespace :me do 
     resources :apps, except: [:new, :edit]
+    resources :favorite_apps, only: [:index, :update, :destroy]
   end
 
   get 'users/:id/portfolio', to: 'users#portfolio'

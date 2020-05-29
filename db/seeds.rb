@@ -42,6 +42,9 @@ names = [
     category: category
   )
 
+  tag = Tag.create!(name: "Games #{i}", description: "This is fun", app: app)
+  comment = Comment.create!(title: "comment #{i}", description: "This is a great app #{i}!", app: app)
+
 end
 
 

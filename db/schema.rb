@@ -53,6 +53,15 @@ ActiveRecord::Schema.define(version: 2020_05_27_050639) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "comments", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.integer "app_id", null: false
+    t.index ["app_id"], name: "index_comments_on_app_id"
+  end
+
   create_table "tags", force: :cascade do |t|
     t.string "name"
     t.text "description"
@@ -95,5 +104,6 @@ ActiveRecord::Schema.define(version: 2020_05_27_050639) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "apps", "categories", on_delete: :nullify
   add_foreign_key "apps", "users", on_delete: :cascade
+  add_foreign_key "comments", "apps"
   add_foreign_key "tags", "apps", on_delete: :cascade
 end
