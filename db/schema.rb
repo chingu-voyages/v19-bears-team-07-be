@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_25_174412) do
+ActiveRecord::Schema.define(version: 2020_05_27_200841) do
 
   create_table "apps", force: :cascade do |t|
     t.string "name"
@@ -30,6 +30,15 @@ ActiveRecord::Schema.define(version: 2020_05_25_174412) do
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "comments", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.integer "app_id", null: false
+    t.index ["app_id"], name: "index_comments_on_app_id"
   end
 
   create_table "tags", force: :cascade do |t|
@@ -73,5 +82,6 @@ ActiveRecord::Schema.define(version: 2020_05_25_174412) do
 
   add_foreign_key "apps", "categories", on_delete: :nullify
   add_foreign_key "apps", "users", on_delete: :cascade
+  add_foreign_key "comments", "apps"
   add_foreign_key "tags", "apps", on_delete: :cascade
 end
