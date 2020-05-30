@@ -1,44 +1,71 @@
 class TagsController < ApplicationController
-  before_action :set_tags, only: [:show, :update, :destroy]
-
-
-  # GET /tags
+  before_action :authenticate_user!, except: [:index]
+  before_action :set_app 
+  before_action :set_tag, except: [:index, :create]
+  
+  # GET apps/:app_id/tags
   def index
-    @tags = Tag.all
-    json_response(@tags)
-  end
+    if @app
+      @tags = Tag.where(app: @app).order(created_at: :desc)
+      json_response(@tags)
+    else
+      head :not_found    
+    end
+  end  
 
-  # GET /tag/:id
-  def show
-    json_response(@tag)
-  end
-
-  # POST /tags
+  # POST apps/:app_id/tags
   def create
-    @tag = Tag.create(tag_params)
-    json_response(@tag, :created)
+    @tag = Tag.new(tag_params)
+    @tag.app = @app
+    if @tag.valid?
+      @tag.save
+      json_response(@tag, :created)
+    else
+      head :bad_request
+    end
   end
 
-  # PUT /tags/:id
+  # GET apps/:app_id/tags/:id
+  def show
+   json_response(@tag)
+  end
+
+  # PATCH or PUT apps/:app_id/tags/:id
   def update
-    @tag.update!(tag_params)
-    head :no_content
+     if @app && @tag
+       @tag.update(tag_params)
+       if @tag.valid?
+         head :no_content
+       else
+         head :bad_request
+      end
+    else
+      head :not_found
+    end
   end
 
-  # DELETE /tags/:id
+  # DELETE apps/:app_id/tags/:id
   def destroy
-    @tag.destroy
-    head :no_content
+    if @app && @tag
+      @tag.destroy
+    else
+      head :no_content
+    end
   end
 
-  private
+  private 
 
   def tag_params
-    # whitelist paramss
+    # whitelist params
     params.permit(:name, :description, :img, :app_id)
+  end
+
+  def set_app
+    @app = App.find(params[:app_id])
   end
 
   def set_tag
     @tag = Tag.find(params[:id])
-  end
+  end 
 end
+
