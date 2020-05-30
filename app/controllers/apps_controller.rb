@@ -4,25 +4,28 @@ class AppsController < ApplicationController
 
   # GET /apps
   def index
-    @apps = App.all
+    @apps = FavAppContext.all(current_user: current_user)
     json_response(@apps)
   end
 
   # GET /app/:id
   def show
-    json_response(@app)
+    app = FavAppContext.find_by(current_user: current_user, id: @app)
+    json_response(app)
   end
 
   # POST /apps
   def create
     @app = App.create(app_params)
-    json_response(@app, :created)
+    app = FavAppContext.find_by(current_user: current_user, id: @app)
+    json_response(app, :created)
   end
 
   # PUT /apps/:id
   def update
     @app.update!(app_params)
-    json_response(@app)
+    app = FavAppContext.find_by(current_user: current_user, id: @app)
+    json_response(app)
   end
 
   # DELETE /apps/:id
