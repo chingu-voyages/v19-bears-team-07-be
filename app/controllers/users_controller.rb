@@ -1,8 +1,9 @@
 Portfolio = Struct.new(:apps)
+SkillsList = Struct.new(:skills)
 
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :update, :destroy, :portfolio]
-  before_action :authenticate_user!, except: [:index, :show, :portfolio]
+  before_action :set_user, only: [:show, :update, :destroy, :portfolio, :skills]
+  before_action :authenticate_user!, except: [:index, :show, :portfolio, :skills]
 
 
   # GET /users
@@ -38,6 +39,12 @@ class UsersController < ApplicationController
   def portfolio
     portfolio = Portfolio.new(@user.apps)
     json_response(portfolio)
+  end 
+
+  # GET /users/:id/skills
+  def skills
+    skills = SkillsList.new(@user.skills)
+    json_response(skills)
   end 
 
   private

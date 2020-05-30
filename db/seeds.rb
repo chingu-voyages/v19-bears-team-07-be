@@ -15,6 +15,18 @@ names = [
   'Social'
 ]
 
+skill_names = [
+  'HTML',
+  'CSS',
+  'Javascript'
+]
+
+skills_list = []
+
+skill_names.each do |skill|
+  skills_list << Skill.create!(name: skill)
+end
+
 5.times do |i|
 
   user = User.create!(
@@ -29,6 +41,10 @@ names = [
     email: "user#{i}@cool.com", 
     password: "password"
   )
+
+  skills_list.each do |skill|
+    user.skills << skill
+  end
 
   category = Category.create!(name: names[i])
 

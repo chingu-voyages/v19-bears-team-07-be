@@ -1,3 +1,3 @@
 class Skill < ApplicationRecord
-  belongs_to :user, foreign_key: :user_id, optional: true
+  has_and_belongs_to_many :users
 end

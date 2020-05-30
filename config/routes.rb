@@ -13,8 +13,7 @@ Rails.application.routes.draw do
   root to: "test_login#index"
 
   # CRUD for Apps, Users, Tags, Catgories
-  resources :apps, :users, :tags, except: [:new, :edit]
-
+  resources :apps, :users, :tags, :skills, except: [:new, :edit]
   resources :categories, except: [:new, :edit] do 
     member do 
       get "apps"
@@ -28,4 +27,5 @@ Rails.application.routes.draw do
   end
 
   get 'users/:id/portfolio', to: 'users#portfolio'
+  get 'users/:id/skills', to: 'users#skills'
 end
