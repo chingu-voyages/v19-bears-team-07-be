@@ -62,6 +62,16 @@ ActiveRecord::Schema.define(version: 2020_05_29_221246) do
     t.index ["app_id"], name: "index_comments_on_app_id"
   end
 
+  create_table "ratings", force: :cascade do |t|
+    t.integer "app_id"
+    t.integer "user_id"
+    t.integer "score"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["app_id"], name: "index_ratings_on_app_id"
+    t.index ["user_id"], name: "index_ratings_on_user_id"
+  end
+
   create_table "skills", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: 6, null: false

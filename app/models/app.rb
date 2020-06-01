@@ -6,4 +6,7 @@ class App < ApplicationRecord
 
   has_many :user_favorite_apps
   has_many :followers, through: :user_favorite_apps
+
+  has_many :ratings
+  has_many :reviewers, through: :ratings
 end
