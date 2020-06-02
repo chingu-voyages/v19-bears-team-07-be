@@ -18,13 +18,9 @@ class SearchesController < ApplicationController
   def index 
     search_params = params.permit(:q)
     search_string = if search_params[:q] then search_params[:q].to_s else "" end
-    puts search_string
     search_terms = search_string.split(' ')
-    puts search_terms.length
 
-    puts search_terms
     results = SearchContext.query(search_terms)
-    # puts results
 
     json_response(results)
   end

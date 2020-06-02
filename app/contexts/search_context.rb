@@ -1,6 +1,6 @@
 
-Dev_search_fields = ["name", "dev_bio"]
-App_search_fields = ["name", "description"]
+Dev_search_fields ||= ["name", "dev_bio"]
+App_search_fields ||= ["name", "description"]
 
 class SearchContext 
 
@@ -10,7 +10,6 @@ class SearchContext
         # regular expressions.
 
         matching_devs = Search.search_devs(terms)
-        puts matching_devs
         #matching_apps = Search.search_apps(terms)
 
         # To identify which terms matched, and HOW WELL, we will take the route of running the search
@@ -18,7 +17,6 @@ class SearchContext
         ranked_devs = Rank.rank_devs(matching_devs, terms).sort { |a, b| 
             b["stats"]["score"] - a["stats"]["score"]
         }
-        puts ranked_devs
         #ranked_apps = Rank.rank_apps(matching_apps, terms)
 
         # For now it looks like we only support dev search, so we just return the results for ranked devs
@@ -77,7 +75,7 @@ class Rank
 
             ranked_arr.push({
                 "stats" => ranking_stats[index],
-                "data" => devs[index].attributes.extract!(*(Dev_search_fields.concat(["img"]))),
+                "data" => devs[index].attributes.extract!(*(["img"].concat(Dev_search_fields))),
                 "apps" => top_ranked_apps,
             })
         }
@@ -94,7 +92,7 @@ class Rank
         apps.each_with_index { |app, index| 
             ranked_arr.push({
                 "stats" => ranking_stats[index],
-                "data" => apps[index].attributes.extract!(*(App_search_fields.concat(["img"]))),
+                "data" => apps[index].attributes.extract!(*(["img"].concat(App_search_fields))),
             })
         }
 
@@ -111,7 +109,7 @@ class Rank
                     memo
                 end
             }
-            puts ("match_count" + match_count.to_s)
+
             { 
                 "matches" => match,
                 "score" => if term_count then (match_count.to_f / term_count) else 0 end
