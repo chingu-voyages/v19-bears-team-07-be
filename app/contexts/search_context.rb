@@ -73,9 +73,15 @@ class Rank
                 b["stats"]["score"] - a["stats"]["score"]
             } .take(3)
 
+            top_ranked_apps.map {|app|
+                with_rating = AppContext.find_by(id: app["data"]["id"])
+                app["rating"] = with_rating["ratings"]
+                app
+            }
+
             ranked_arr.push({
                 "stats" => ranking_stats[index],
-                "data" => devs[index].attributes.extract!(*(["img"].concat(Dev_search_fields))),
+                "data" => devs[index].attributes.extract!(*(["img", "id"].concat(Dev_search_fields))),
                 "apps" => top_ranked_apps,
             })
         }
@@ -92,7 +98,7 @@ class Rank
         apps.each_with_index { |app, index| 
             ranked_arr.push({
                 "stats" => ranking_stats[index],
-                "data" => apps[index].attributes.extract!(*(["img"].concat(App_search_fields))),
+                "data" => apps[index].attributes.extract!(*(["img", "id"].concat(App_search_fields))),
             })
         }
 
