@@ -16,6 +16,9 @@ names = [
 ]
 
 skill_names = [
+  'Rails',
+  'Vue', 
+  'React',
   'HTML',
   'CSS',
   'Javascript'
