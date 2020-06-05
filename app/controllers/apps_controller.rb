@@ -4,7 +4,12 @@ class AppsController < ApplicationController
 
   # GET /apps
   def index
-    @apps = AppContext.all(current_user: current_user)
+    category = Category.find_by(id: params[:category])
+    if category
+      @apps = AppContext.all(current_user: current_user, category: category)
+    else
+      @apps = AppContext.all(current_user: current_user)
+    end
     json_response(@apps)
   end
 
