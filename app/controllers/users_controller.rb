@@ -8,7 +8,13 @@ class UsersController < ApplicationController
 
   # GET /users
   def index
-    @users = User.all
+    skill = params[:skill]
+    if skill
+      @users = Skill.find_by(id: skill).users
+    else
+      @users = User.all
+    end
+
     @users.each do |user|
       if user.image.attached?
         user.img = url_for(user.image)
