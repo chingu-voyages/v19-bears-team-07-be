@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_29_221246) do
+ActiveRecord::Schema.define(version: 2020_06_06_175741) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -59,7 +59,9 @@ ActiveRecord::Schema.define(version: 2020_05_29_221246) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "app_id", null: false
+    t.integer "user_id", null: false
     t.index ["app_id"], name: "index_comments_on_app_id"
+    t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
   create_table "ratings", force: :cascade do |t|
@@ -128,5 +130,6 @@ ActiveRecord::Schema.define(version: 2020_05_29_221246) do
   add_foreign_key "apps", "categories", on_delete: :nullify
   add_foreign_key "apps", "users", on_delete: :cascade
   add_foreign_key "comments", "apps", on_delete: :cascade
+  add_foreign_key "comments", "users", on_delete: :cascade
   add_foreign_key "tags", "apps", on_delete: :cascade
 end

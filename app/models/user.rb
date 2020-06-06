@@ -5,6 +5,7 @@ class User < ApplicationRecord
   has_many :favorite_apps, through: :user_favorite_apps 
   has_and_belongs_to_many :skills
   has_one_attached :image
+  has_many :comments
 
   has_many :ratings
   has_many :reviewed_apps, through: :ratings

@@ -7,7 +7,9 @@ class CommentsController < ApplicationController
     def index
       if @app
         @comments = Comment.where(app: @app).order(created_at: :desc)
-        json_response(@comments)
+        json_response(@comments.map { |comment| 
+          display_comment(comment)
+        })
       else
         head :not_found    
       end
@@ -57,7 +59,7 @@ class CommentsController < ApplicationController
 
     def comment_params
       # whitelist params
-      params.permit(:title, :description, :app_id)
+      params.permit(:title, :description, :app_id, :user_id)
     end
   
     def set_app
@@ -69,5 +71,19 @@ class CommentsController < ApplicationController
     def set_comment
       @comment = Comment.find(params[:id])
     end 
+
+    # This maps an comment to provide a client-appropriate summary of the 
+    # comment's information
+    def display_comment(comment)
+      hash = comment.attributes
+      hash["img"] = 
+        if comment.user.image.attached?
+          url_for(comment.user.image)
+        else 
+          "http://www.loftladderscotland.com/images/default_avatar.jpg"
+        end
+      hash["username"] = comment.user.name
+      hash
+    end
 end
 
