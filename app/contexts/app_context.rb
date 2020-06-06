@@ -1,16 +1,16 @@
-SELECT_FAVS = " user_favorite_apps.user_id as follower_id, user_favorite_apps.app_id as favapp_id"
-SELECT_RATINGS = " ratings.user_id as reviewer_id, ratings.app_id as reviewed_app_id, ratings.score"
-SELECT = " apps.*, #{SELECT_FAVS}, #{SELECT_RATINGS}"
+SELECT_FAVS ||= " user_favorite_apps.user_id as follower_id, user_favorite_apps.app_id as favapp_id"
+SELECT_RATINGS ||= " ratings.user_id as reviewer_id, ratings.app_id as reviewed_app_id, ratings.score"
+SELECT ||= " apps.*, #{SELECT_FAVS}, #{SELECT_RATINGS}"
 
-JoinFavorite = -> (params) {
+JoinFavorite ||= -> (params) {
     " LEFT OUTER JOIN \"user_favorite_apps\" ON \"user_favorite_apps\".\"app_id\" = \"apps\".\"id\" AND " + 
             "\"user_favorite_apps\".\"user_id\" = #{params[:current_user]["id"]} "
 }
-JoinRating = -> (params) {
+JoinRating ||= -> (params) {
     " LEFT OUTER JOIN \"ratings\" ON \"ratings\".\"app_id\" = \"apps\".\"id\" AND " + 
             "\"ratings\".\"user_id\" = #{params[:current_user]["id"]} " 
 }
-Join = -> (params) { 
+Join ||= -> (params) { 
     "#{JoinFavorite.call(params)} #{JoinRating.call(params)}"
 }
 
@@ -29,10 +29,10 @@ class AppContext
 
     def self.all (params = {})
         if params[:current_user]
-            apps = App.joins(Join.call(params)).select(SELECT)
+            apps = App.joins(Join.call(params)).where(params.except(:current_user)).select(SELECT)
             apps = self.to_hashes(apps)
         else
-            apps = App.all
+            apps = App.all.where(params.except(:current_user))
             apps = self.to_hashes(apps)
         end
         rating_stats = self.rating_stats_where
