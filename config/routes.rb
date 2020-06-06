@@ -39,4 +39,7 @@ Rails.application.routes.draw do
 
   get 'users/:id/portfolio', to: 'users#portfolio'
   get 'users/:id/skills', to: 'users#skills'
+
+  # Route for search
+  get 'search', to: 'searches#index'
 end
