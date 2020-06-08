@@ -32,6 +32,9 @@ gem 'devise'
 # for cors middleware
 gem 'rack-cors'
 
+# To make sure cookies have `SameSite=None`
+gem 'rails_same_site_cookie'
+
 group :development, :test do
   # Use sqlite3 as the database for Active Record
   gem 'sqlite3', '~> 1.4'
