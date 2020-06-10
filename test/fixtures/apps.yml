@@ -3,7 +3,8 @@
 one:
   name: MyString
   description: MyText
+  app_url: http://www.123.com
+  github_url: http://www.123.com
+  user: one
+  category: one
 
-two:
-  name: MyString
-  description: MyText
