@@ -40,10 +40,14 @@ class UsersController < ApplicationController
   # PATCH or PUT /users/:id
   def update
     @user.update!(user_params)
-    if @user.image.attached?
-      @user.image.purge
+
+    # We only replace the image if the user data had an image
+    if params[:image]
+      if @user.image.attached?
+        @user.image.purge
+      end
+      @user.image.attach(params[:image])
     end
-    @user.image.attach(params[:image])
     head :no_content
   end
 

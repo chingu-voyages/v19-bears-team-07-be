@@ -34,7 +34,7 @@ end
 
   user = User.create!(
     name: "User #{i}",
-    img: "https://media.npr.org/assets/img/2020/02/20/zachwoods_hbo_bullseye2020_custom-539527210f27f2329bc46b37bbffc3742de8e1f7-s800-c85.jpeg",
+    img: "http://www.loftladderscotland.com/images/default_avatar.jpg",
     dev_bio: "Hey, I'm developer ##{i}",
     is_dev: true,
     dev_twitter: "https://twitter.com/piedpiperplc",
