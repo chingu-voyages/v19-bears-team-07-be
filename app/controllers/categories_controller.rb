@@ -60,7 +60,6 @@ class CategoriesController < ApplicationController
             apps = App.where(category: @category)
             json_response(apps)
         else 
-            puts "NOT FOUND"
             head :not_found
         end
     end
