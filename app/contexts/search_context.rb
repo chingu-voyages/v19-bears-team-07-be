@@ -4,7 +4,7 @@ App_search_fields ||= ["name", "description"]
 
 class SearchContext 
 
-    def self.query (terms = [])
+    def self.query (url_gen, terms = [])
         # Because we haven't pre-processed the data into text indexes yet,
         # the most we can do is query on devs and apps in terms of 
         # regular expressions.
@@ -14,7 +14,7 @@ class SearchContext
 
         # To identify which terms matched, and HOW WELL, we will take the route of running the search
         # AGAIN in memory to determine how each matching item matched the terms
-        ranked_devs = Rank.rank_devs(matching_devs, terms).sort { |a, b| 
+        ranked_devs = Rank.rank_devs(url_gen, matching_devs, terms).sort { |a, b| 
             b["stats"]["score"] - a["stats"]["score"]
         }
         #ranked_apps = Rank.rank_apps(matching_apps, terms)
@@ -60,7 +60,7 @@ end
 
 class Rank 
 
-    def self.rank_devs(devs, terms)
+    def self.rank_devs(url_gen, devs, terms)
         matches = self.gen_matches(devs, Dev_search_fields, terms)
         ranking_stats = self.gen_ranking_stats(matches, terms.length)
 
@@ -79,9 +79,15 @@ class Rank
                 app
             }
 
+            dev = devs[index]
+            dev_attributes = dev.attributes
+            if dev.image.attached? 
+                dev_attributes["img"] = url_gen.call(dev.image)
+            end
+            
             ranked_arr.push({
                 "stats" => ranking_stats[index],
-                "data" => devs[index].attributes.extract!(*(["img", "id"].concat(Dev_search_fields))),
+                "data" => dev_attributes.extract!(*(["img", "id"].concat(Dev_search_fields))),
                 "apps" => top_ranked_apps,
             })
         }

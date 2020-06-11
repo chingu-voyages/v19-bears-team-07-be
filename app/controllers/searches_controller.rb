@@ -20,7 +20,8 @@ class SearchesController < ApplicationController
     search_string = if search_params[:q] then search_params[:q].to_s else "" end
     search_terms = search_string.split(' ')
 
-    results = SearchContext.query(search_terms)
+    url_gen = -> (file) { url_for(file) }
+    results = SearchContext.query(url_gen, search_terms)
 
     json_response(results)
   end
