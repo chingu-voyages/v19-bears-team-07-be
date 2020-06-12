@@ -80,7 +80,7 @@ class CommentsController < ApplicationController
         if comment.user.image.attached?
           url_for(comment.user.image)
         else 
-          "http://www.loftladderscotland.com/images/default_avatar.jpg"
+          "https://www.loftladderscotland.com/images/default_avatar.jpg"
         end
       hash["username"] = comment.user.name
       hash
