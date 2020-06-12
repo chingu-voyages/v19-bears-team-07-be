@@ -30,7 +30,7 @@ skill_names.each do |skill|
   skills_list << Skill.create!(name: skill)
 end
 
-5.times do |i|
+3.times do |i|
 
   user = User.create!(
     name: "User #{i}",
