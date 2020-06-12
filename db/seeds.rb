@@ -7,11 +7,11 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 names = [
-  'Developer Tools', 
   'Games', 
-  'News & Weather',
-  'Productivity',
   'Shopping',
+  'Productivity',
+  'Developer Tools', 
+  'News & Weather',
   'Social'
 ]
 
