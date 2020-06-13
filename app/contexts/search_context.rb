@@ -10,14 +10,12 @@ class SearchContext
         # regular expressions.
 
         matching_devs = Search.search_devs(terms)
-        #matching_apps = Search.search_apps(terms)
 
         # To identify which terms matched, and HOW WELL, we will take the route of running the search
         # AGAIN in memory to determine how each matching item matched the terms
         ranked_devs = Rank.rank_devs(url_gen, matching_devs, terms).sort { |a, b| 
             b["stats"]["score"] - a["stats"]["score"]
         }
-        #ranked_apps = Rank.rank_apps(matching_apps, terms)
 
         # For now it looks like we only support dev search, so we just return the results for ranked devs
         ranked_devs
@@ -49,10 +47,19 @@ class Search
     def self.gen_search_expr(search_fields, terms) 
         array = search_fields.map { |field| 
             terms.map { |term| 
-                ["#{field} LIKE ?", "%#{term}%"]
+                ["#{field} #{self.like} ?", "%#{term}%"]
             }
         }
         array.flatten(1)
+    end
+
+    def self.like 
+        if Rails.env == "production"
+            # Specific to production postgres database to get case-insensitive pattern matching
+            "ILIKE"
+        else 
+            "LIKE"
+        end
     end
 
 end
