@@ -26,4 +26,4 @@ Prerequisites:
 Use `bundle install` to install all libraries, and run `rails db:migrate` and `rails db:seed` to set up the database.
 To run tests, use `rails test`.
 
-Running `rails server` will deploy locally at `http://localhost:8000`. You will then also have to build and deploy the [frontend repo](https://github.com/chingu-voyages/v19-bears-team-07) by following its README instructions.
+Running `rails server` will deploy locally at `http://localhost:3000`. You will then also have to build and deploy the [frontend repo](https://github.com/chingu-voyages/v19-bears-team-07) by following its README instructions.
